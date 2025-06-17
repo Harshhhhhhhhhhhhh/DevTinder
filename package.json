@@ -1,0 +1,14 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "Platform for Developers",
+  "main": "index.js",
+  "scripts": {
+    "dev":"nodemon src/app.js"
+  },
+  "author": "Harsh RAj",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
