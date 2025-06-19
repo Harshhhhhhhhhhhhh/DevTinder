@@ -65,3 +65,4 @@ debug.log
 # Optional: Next.js or similar SSR framework
 .next/
 out/
+
