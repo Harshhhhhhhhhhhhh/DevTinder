@@ -2,21 +2,38 @@ const express = require("express")
 
 const app = express();
 
-app.get("/user",(req,res)=>{
-    res.send({firstName:"Harsh" , lastName:"Raj"})
-})
+app.use("/user",(req,res,next)=>{
+    console.log("Handling the route of user!!");
+    //res.send("Response!!");
+    next();
+},
+(req,res,next)=>{
+    //route handler 2
+    console.log("Handling the route2 of  user!!");
+   // res.send("Response2!!");
+    next()
+},
+(req,res,next)=>{
+    //route handler 3
+    console.log("Handling the route3 of  user!!");
+    //res.send("Response3!!");
+    next()
 
-app.post("/user",(req,res)=>{
-    res.send("User successfully add to DB")
-})
+},
+(req,res,next)=>{
+    //route handler 4
+    console.log("Handling the route4 of  user!!");
+    //res.send("Response4!!");
+    next()
+},
+(req,res)=>{
+    //route handler 5
+    console.log("Handling the route5 of  user!!");
+    res.send("Response5!!");
+}
 
-app.delete("/user",(req,res)=>{
-    res.send("User Deleted from DB")
-})
 
-app.use("/test",(req,res)=>{
-    res.send("Hello form the Server hahahahhshs")
-})
+);
 
 app.listen(3000,()=>{
     console.log("Server is successfully running on port 3000")
