@@ -15,8 +15,16 @@ app.post("/signUp" ,async (req,res)=>{
         age:45
     }
     const user = new User(userObj)
-    await user.save();
-    res.send("User added successfully")
+    try{
+        await user.save();
+        res.send("User added successfully")
+
+    }
+    catch(err){
+        res.status.send("Error while saving the user" + err.message)
+
+    }
+    
 
 })
 
