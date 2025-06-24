@@ -42,6 +42,7 @@ app.get("/user",async(req,res)=>{
 
 })
 
+
 //Feed-API--get/feed--get all users from data base
 
 app.get("/feed",async (req,res)=>{
@@ -62,6 +63,33 @@ app.get("/feed",async (req,res)=>{
 
 })
 
+//Delete Api
+app.delete("/user", async(req,res)=>{
+    const userId = req.body.userId
+
+    try{
+        const user = await  User.findByIdAndDelete(userId);
+        res.send("user deleted")
+    }
+    catch(err){
+        res.status(400).send("something went wrong" + err)
+    }
+})
+
+//Patch api
+
+app.patch("/user",async(req,res)=>{
+    const userId = req.body.userId
+    const data = req.body
+
+    await User.findOneAndUpdate({ _id:userId},data);
+    try{
+        res.send("user emailId updated")
+    }
+    catch(err){
+        res.status(400).send("Something went wrong"+err)
+    }
+})
 
 
 connectDB()
