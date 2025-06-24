@@ -6,15 +6,11 @@ const User= require("./models/userSchema.js")
 
 const app = express();
 
+app.use(express.json())
+
 app.post("/signUp" ,async (req,res)=>{
-    const userObj = {
-        firstName:"Surbhi",
-        lastName:"Singh",
-        emailId:"surbhi@gmail.com",
-        password:"123",
-        age:45
-    }
-    const user = new User(userObj)
+    
+    const user = new User(req.body)
     try{
         await user.save();
         res.send("User added successfully")
