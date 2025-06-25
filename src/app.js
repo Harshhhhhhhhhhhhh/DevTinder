@@ -17,7 +17,7 @@ app.post("/signUp" ,async (req,res)=>{
 
     }
     catch(err){
-        res.status.send("Error while saving the user" + err.message)
+        res.status(400).send("Error while saving the user" + err.message)
 
     }
     
@@ -78,13 +78,35 @@ app.delete("/user", async(req,res)=>{
 
 //Patch api
 
-app.patch("/user",async(req,res)=>{
-    const userId = req.body.userId
+app.patch("/user/:userId",async(req,res)=>{
+
+    const userId = req.params?.userId;
     const data = req.body
 
-    await User.findOneAndUpdate({ _id:userId},data);
+
+
+    
+
+    await User.findOneAndUpdate({ _id:userId},data,{
+        returnDocument:"after",
+        runValidators:true
+    });
     try{
-        res.send("user emailId updated")
+        const allowedUpdates = ["firstName","lastName","password","age","gender","photoUrl","skills","about"]
+
+        const isUpdateAllowed = Object.keys(data).every((k)=>{
+            return allowedUpdates.includes(k)
+        })
+
+        if(!data.skills || data.skills.length>10){
+            throw new Error("you must have atleast one skill and maxim 10 skills ")
+        }
+        
+        if(!isUpdateAllowed){
+            throw new Error("this update is not allowed")
+        }
+
+        res.send("user  updated")
     }
     catch(err){
         res.status(400).send("Something went wrong"+err)
