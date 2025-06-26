@@ -1,17 +1,21 @@
 const express = require("express");
-
 const connectDB = require("./config/database.js");
-
 const User= require("./models/userSchema.js");
-
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const {UserAuth} = require('./middlewares/auth.js');
+
 
 const {SignUpValidation} = require("./utils/validation.js");
 const {loginValidation} = require("./utils/validation.js");
 
 const app = express();
 
-app.use(express.json())
+
+app.use(express.json());
+app.use(cookieParser());
+
 
 app.post("/signUp" ,async (req,res)=>{
 
@@ -50,6 +54,7 @@ app.post("/login",async(req,res)=>{
 
 
     try{
+
         const {emailId,password}=req.body;
 
         //validating email
@@ -60,9 +65,11 @@ app.post("/login",async(req,res)=>{
         if(!user){
             throw new Error("Incorrect Credential")
         }
-        const isPasswordValid = await bcrypt.compare(password,user.password);
+        const isPasswordValid = await user.validatePassword(password)
     
         if(isPasswordValid){
+            const token = user.getJWT()
+            res.cookie("token",token,{expires:new Date(Date.now()+ 8*3600000)})
             res.send("User LoggedIn successfully")
         }
         
@@ -73,100 +80,36 @@ app.post("/login",async(req,res)=>{
 
     }
     catch(err){
-        res.status(400).send("Invalid credential")
+        res.status(400).send("Invalid credential ERR: " + err)
     }
     
 
 })
 
-app.get("/user",async(req,res)=>{
-    const userEmail = req.body.emailId;
-    try{
-        const user = await User.find({emailId:userEmail});
-        if(user.length===0){
-            res.status(400).send("Cannot find user")
-
-        }
-        else{
-            res.send(user)
-        }
-    }
-    catch(err){
-        res.status(400).send("Something went wrong "+err)
-    }
-
-})
-
-
-//Feed-API--get/feed--get all users from data base
-
-app.get("/feed",async (req,res)=>{
-    try{
-        const users = await User.find({});
-        // if(users.length===0){
-        //     res.status(400).send("Cannot find user")
-
-        // }
-        //else{
-            res.send(users)
-        //}
-    }
-    catch(err){
-        res.status(400).send("Something went wrong "+err)
-    }
-    
-
-})
-
-//Delete Api
-app.delete("/user", async(req,res)=>{
-    const userId = req.body.userId
+app.get("/profile" , UserAuth,async(req,res)=>{
 
     try{
-        const user = await  User.findByIdAndDelete(userId);
-        res.send("user deleted")
-    }
-    catch(err){
-        res.status(400).send("something went wrong" + err)
-    }
-})
-
-//Patch api
-
-app.patch("/user/:userId",async(req,res)=>{
-
-    const userId = req.params?.userId;
-    const data = req.body
-
-
-
-    
-
-    await User.findOneAndUpdate({ _id:userId},data,{
-        returnDocument:"after",
-        runValidators:true
-    });
-    try{
-        const allowedUpdates = ["firstName","lastName","password","age","gender","photoUrl","skills","about"]
-
-        const isUpdateAllowed = Object.keys(data).every((k)=>{
-            return allowedUpdates.includes(k)
-        })
-
-        if(!data.skills || data.skills.length>10){
-            throw new Error("you must have atleast one skill and maxim 10 skills ")
-        }
         
-        if(!isUpdateAllowed){
-            throw new Error("this update is not allowed")
-        }
+        const user = req.user
+        res.send(user)
 
-        res.send("user  updated")
     }
     catch(err){
-        res.status(400).send("Something went wrong"+err)
+        res.status(400).send("user not logged In" + err)
+
+
     }
+    
+
 })
+
+app.post("/sendConnectionRequest",UserAuth,async(req,res)=>{
+    const user = req.user;
+
+    res.send(user.firstName + " Sent you a Conneection ")
+
+})
+
 
 
 connectDB()
