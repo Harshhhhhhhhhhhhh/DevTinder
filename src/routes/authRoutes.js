@@ -23,7 +23,6 @@ authRouter.post("/signUp" ,async (req,res)=>{
         firstName,lastName,emailId,password:hashPassword,age,gender,skills,about
     })
 
-
     try{
         await user.save();
         res.send("User signup successfully")
@@ -73,6 +72,16 @@ authRouter.post("/login",async(req,res)=>{
         res.status(400).send("Invalid credential ERR: " + err)
     }
     
+
+})
+
+
+
+authRouter.post("/logout",async(req,res)=>{
+    res.cookie("token",null,{
+        expires:new Date(Date.now())
+    })
+    res.send("User logedOut");
 
 })
 
