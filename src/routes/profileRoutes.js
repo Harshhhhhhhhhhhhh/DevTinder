@@ -28,7 +28,7 @@ profileRouter.post("/profile/edit",UserAuth,async(req,res)=>{
     try{
         editProfileValidation(req);
         if(!editProfileValidation){
-            res.send("You are not allowed to update this Field");
+            return res.send("You are not allowed to update this Field");
         }
         const LoggedInUser = req.user;
 
