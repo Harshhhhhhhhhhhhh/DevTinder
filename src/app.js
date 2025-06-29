@@ -5,17 +5,19 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-
+  
 app.use(express.json());
 app.use(cookieParser());
 
 const authRouter = require("./routes/authRoutes.js");
 const profileRouter = require("./routes/profileRoutes.js");
 const requestRouter = require("./routes/requestRoutes.js");
+const userRouter = require("./routes/userRoutes.js");
 
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",requestRouter);
+app.use("/",userRouter);
 
 
 

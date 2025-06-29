@@ -7,7 +7,9 @@ const User = require("../models/userSchema.js")
 
 const requestRouter = express.Router();
 
-    requestRouter.post("/request/send/:status/:toUserId",UserAuth,async(req,res)=>{
+
+requestRouter.post("/request/send/:status/:toUserId",UserAuth,async(req,res)=>{
+
         try{
 
             const fromUserId = req.user._id;
@@ -61,6 +63,43 @@ const requestRouter = express.Router();
     
 
 })
+requestRouter.post("/request/view/:status/:requestId" ,UserAuth,async(req,res)=>{
+
+    try{
+        const loggedInUser = req.user;
+        const {status,requestId} = req.params;
+
+        const allowedStatus=["accepted","rejected"];
+
+        if(!allowedStatus.includes(status)){
+            return res.status(400).send("Invalid Status");
+        }
+        const connectionRequest=await ConnectionRequestModel.findOne({
+            _id : requestId,
+            toUserId:loggedInUser._id,
+            status:"interested"
+
+        })
+        if(!connectionRequest){
+            res.status(400).send("Connection request not found!!!")
+        }
+
+        connectionRequest.status = status;
+        const  data = await connectionRequest.save();
+        res.json({message:`connection request ${status} `, data})
+
+        //validate the requestId
+        //validate the status
+        //status==="interested"
+        //loggedInUser===touserId
+
+    }
+    catch(err){
+        res.status(400).send("Something went wrong ERR: " + err);
+    }
+
+}
+)
 
 
 module.exports=requestRouter;

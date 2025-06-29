@@ -1,19 +1,23 @@
 const mongoose = require("mongoose");
 
-const connectionRequesstSchema = new mongoose.Schema({
+
+
+const connectionRequestSchema = new mongoose.Schema({
 
     fromUserId:{
         type:mongoose.Schema.ObjectId,
         index:true,
         unique:true,
-        required:true
+        required:true,
+        ref:"User"
     },
 
     toUserId:{
         type:mongoose.Schema.ObjectId,
         index:true,
         unique:true,
-        required:true
+        required:true,
+        ref:"User"
     },
 
     status:{
@@ -32,10 +36,10 @@ const connectionRequesstSchema = new mongoose.Schema({
 )
 
 
-connectionRequesstSchema.index({fromUserId:1,toUserId:1});
+connectionRequestSchema.index({fromUserId:1,toUserId:1})
 
 
-connectionRequesstSchema.pre("save", function(next){
+connectionRequestSchema.pre("save", function(next){
     const connectionRequest = this;
 
     if(connectionRequest.fromUserId.equals(connectionRequest.toUserId)){
@@ -45,6 +49,6 @@ connectionRequesstSchema.pre("save", function(next){
     
 })
 
-const ConnectionRequestModel = new mongoose.model("ConnectionRequest",connectionRequesstSchema);
+const ConnectionRequestModel = new mongoose.model("ConnectionRequest",connectionRequestSchema);
 
 module.exports = ConnectionRequestModel;
