@@ -13,7 +13,7 @@ const UserAuth = async (req,res,next)=>{
         const {token} = cookies;
     
         if(!token){
-            throw new Error("Pls login again ,Invalid Token")
+            return res.status(401).send("Pls login again ,Invalid Token");
         }
          
         const decodeData = jwt.verify(token , "abcdefghijklmnopqrstuvwxyz")
