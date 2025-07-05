@@ -62,9 +62,10 @@ authRouter.post("/login",async(req,res)=>{
             res.json({message:"User LoggedIn successfully",data:user})
         }
         
-        else{
-            res.send("Incorrect Credential")
+        else {
+            return res.status(401).json({ message: "Incorrect Credential" });
         }
+
 
 
     }
