@@ -18,8 +18,7 @@ userRouter.get("/user/requests/received",UserAuth,async(req,res)=>{
             status:"interested"
         }).populate("fromUserId",USE_SAFE_DATA);
 
-        const data = connectionRequest.map((row)=>row.fromUserId);
-
+        const data = connectionRequest
         res.json({
             message:"Data fetched successfully",
             data:data

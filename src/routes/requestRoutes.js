@@ -81,7 +81,7 @@ requestRouter.post("/request/view/:status/:requestId" ,UserAuth,async(req,res)=>
 
         })
         if(!connectionRequest){
-            res.status(400).send("Connection request not found!!!")
+            return res.status(400).send("Connection request not found!!!")
         }
 
         connectionRequest.status = status;
