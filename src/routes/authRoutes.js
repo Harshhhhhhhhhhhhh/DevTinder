@@ -24,8 +24,11 @@ authRouter.post("/signUp" ,async (req,res)=>{
     })
 
     try{
-        await user.save();
-        res.send("User signup successfully")
+        const savedUser = await user.save();
+        const token = savedUser.getJWT()
+        res.cookie("token",token,{expires:new Date(Date.now()+ 8*3600000)})
+        res.json({message:"User signup successfully",data:savedUser});
+        
 
     }
     catch(err){
