@@ -36,7 +36,7 @@ connectDB()
         })
     })
     .catch((err)=>{
-        console.err("DataBase connection failed")
+        console.error("DataBase connection failed: "+ err)
     })
 
 
