@@ -17,17 +17,16 @@ const SignUpValidation=(req)=>{
     }
 };
 
-const loginValidation=(req)=>{
-    const {emailId}=req.body;
+const loginValidation = (req) => {
+  const { emailId } = req.body;
 
-    if(!emailId){
-        throw new Error("Invalid credential Try again")
-    }
+  if (!emailId) {
+    throw new Error("Email is required");
+  }
 
-    if(!Validator.isEmail(emailId)){
-        throw new Error("Input is valid")
-
-    }
+  if (!Validator.isEmail(emailId)) {
+    throw new Error("Please enter a valid email address");
+  }
 }
 
 const editProfileValidation = (req)=>{
